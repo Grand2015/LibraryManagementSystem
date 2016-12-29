@@ -101,6 +101,47 @@ void CBook::GetBookFromFile(int iCount)
 	}
 	ifile.close();
 }
+//DeleteData function
+void CBook::DeleteData(int iCount)
+{
+	long respos;
+	int iDataCount=0;
+	fstream file,tmpfile;
+	ofstream ofile;
+	char cTempBUf[NUM1+NUM1+NUM2+NUM2];
+	file.open("book.dat",ios::binary|ios::in|ios::out);
+	tmpfile.open("temp.dat",ios::binary|ios::in|ios::out|ios::trunc);
+	file.seekg(0,ios::end);
+	respos=file.tellg();
+	iDataCount=respos/(NUM1+NUM1+NUM2+NUM2);
+	if(iCount<0 && iCount>iDataCount)
+	{
+		throw "Input number error";
+	}
+	else
+	{
+		file.seekg((iCount)*(NUM1+NUM1+NUM2+NUM2),ios::beg);
+		for(int j=0;j<(iDataCount-iCount);j++)
+		{
+			memset(cTempBUf,0,NUM1+NUM1+NUM2+NUM2);
+			file.read(cTempBUf,NUM1+NUM1+NUM2+NUM2);
+			tmpfile.write(cTempBUf,NUM1+NUM1+NUM2+NUM2);
+		}
+		file.close();
+		tmpfile.seekg(0,ios::beg);
+		ofile.open("book.dat");
+		ofile.seekp((iCount-1)*(NUM1+NUM1+NUM2+NUM2),ios::beg);
+		for(int j=0;j<(iDataCount-iCount);j++)
+		{
+			memset(cTempBUf,0,NUM1+NUM1+NUM2+NUM2);
+			tmpfile.read(cTempBUf,NUM1+NUM1+NUM2+NUM2);
+			ofile.write(cTempBUf,NUM1+NUM1+NUM2+NUM2);
+		}
+	}
+	tmpfile.close();
+	ofile.close();
+	remove("temp.dat");
+}
 
 int main()
 {
