@@ -25,4 +25,4 @@ protected:
 	char m_cIsbn[NUM1];
 	char m_cPrice[NUM2];
 	char m_cAuthor[NUM2];
-}
+};
