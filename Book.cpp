@@ -4,6 +4,11 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <stdlib.h>
+//#include <conio.h>
+#include <curses.h>
+#define CMD_COLS 80
+#define CMD_LINES 25
 
 using namespace std;
 
@@ -143,7 +148,18 @@ void CBook::DeleteData(int iCount)
 	remove("temp.dat");
 }
 
+//SetScreenGrid function
+void SetScreenGrid()
+{
+	char sysSetBuf[80];
+	sprintf(sysSetBuf,"mode con cols=%d lines=%d",CMD_COLS,CMD_LINES);
+	cout<<"set screen grid"<<endl;
+	system(sysSetBuf);
+}
+
+//main function
 int main()
 {
+	SetScreenGrid();
 	return 0;
 }
