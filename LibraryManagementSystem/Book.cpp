@@ -240,20 +240,126 @@ int GetSelect()
 //GuideInput function
 void GuideInput()
 {
+	char inName[NUM1];
+	char inIsbn[NUM1];
+	char inPrice[NUM2];
+	char inAuthor[NUM2];
 
+	cout << "请输入书名" << endl;
+	cin >> inName;
+	cout << "请输入Isbn" << endl;
+	cin >> inIsbn;
+	cout << "请输入价格" << endl;
+	cin >> inPrice;
+	cout << "请输入作者" << endl;
+	cin >> inAuthor;
+
+	CBook book(inName, inIsbn, inPrice, inAuthor);
+	book.WriteData();
+	ClearScreen();
+	cout << "添加成功" << endl;
+	WaitUser();
+}
+
+//GetFileLength function
+long GetFileLength(ifstream &ifs)
+{
+	long tmppos;
+	long respos;
+	tmppos = (long)ifs.tellg();
+	ifs.seekg(0, ios::end);
+	respos = (long)ifs.tellg();
+	ifs.seekg(tmppos, ios::beg);
+	return respos;
 }
 
 //ViewData function
-void ViewData()
+void ViewData(int iSelPage=1)
 {
+	int  iPage      = 0;
+	int  iCurPage   = 0;
+	int  iDataCount = 0;
+	char inName[NUM1];
+	char inIsbn[NUM1];
+	char inPrice[NUM2];
+	char inAuthor[NUM2];
+	bool bIndex = false;
+	int iFileLength;
+	iCurPage = iSelPage;
+	ifstream ifile;
+	ifile.open("book.dat", ios::binary);
+	iFileLength = GetFileLength(ifile);
+	iDataCount = iFileLength / (NUM1 + NUM1 + NUM2 + NUM2);
+	if (iDataCount >= 1)
+		bIndex = true;
+	iPage = iDataCount / 20 + 1;
+	ClearScreen();
+	cout << "共有记录" << iDataCount << "";
+	cout << "共有页数" << iPage << "";
+	cout << "当前页数" << iCurPage << "";
+	cout << "n显示下一页m返回" << endl;
+	cout << setw(5) << "Index";
+	cout << setw(22) << "Name"<<setw(22)<<"Isbn";
+	cout << setw(15) << "Price" << setw(22) << "Author";
+	try
+	{
+		ifile.seekg((iCurPage - 1) * 20 * (NUM1 + NUM1 + NUM2 + NUM2), ios::beg);
+		if (!ifile.fail())
+		{
+			for (int i = 1; i < 21; i++)
+			{
+				memset(inName, 0, 128);
+				memset(inIsbn, 0, 128);
+				memset(inPrice, 0, 50);
+				memset(inAuthor, 0, 50);
 
+				if (bIndex)
+					cout << setw(3) << ((iCurPage - 1) * 20 + i);
+				ifile.read(inName, NUM1);
+				cout << setw(24) << inName;
+				ifile.read(inIsbn, NUM1);
+				cout << setw(24) << inIsbn;
+				ifile.read(inPrice, NUM2);
+				cout << setw(24) << inPrice;
+				ifile.read(inAuthor, NUM2);
+				cout << setw(24) << inAuthor;
+				cout << endl;
+
+				if (ifile.tellg() < 0)
+					bIndex = false;
+				else
+					bIndex = true;
+			}
+		}
+	}
+	catch(...)
+	{
+		cout << "throw file exceptio" << endl;
+		throw "file error occurred";
+		ifile.close();
+	}
+	if (iCurPage < iPage)
+	{
+		iCurPage++;
+		//WaitUser();
+		WaitUser();
+	}
+	else
+		WaitUser();
+	ifile.close();
+	system("pause");
 }
 
 //DeleteBookFromFile function
 void DeleteBookFromFile()
 {
-
-
+	int iDelCount;
+	cout << "Input delete index" << endl;
+	cin >> iDelCount;
+	CBook tmpbook;
+	tmpbook.DeleteData(iDelCount);
+	cout << "删除完成" << endl;
+	WaitUser();
 }
 
 //main function
@@ -262,22 +368,30 @@ int main()
 	SetScreenGrid();
 	//SetsysCaptionStyle1();
 	SetsysCaptionStyle2("图书管理");
-	ShowWelcome();
+	//ShowWelcome();
 	while (1)
 	{
+		SetsysCaptionStyle2("图书管理");
+
 		ClearScreen();
 		ShowWelcome();
 		ShowRootMenu();
-		system("pause");
+		//system("pause");
 		switch (GetSelect())
 		{
 		case 1:
 			ClearScreen();
+
+			SetsysCaptionStyle2("添加图书");
+			ClearScreen();
 			GuideInput();
+			WaitUser();
 			break;
 		case 2:
 			ClearScreen();
 			ViewData();
+			//system("pause");
+
 			break;
 		case 3:
 			ClearScreen();
