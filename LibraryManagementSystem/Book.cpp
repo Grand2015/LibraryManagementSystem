@@ -17,13 +17,19 @@
 //win32下面包含conio.h，lnuix系统下面包含curses.h
 #include <conio.h>
 //#include <curses.h>
+using namespace std;
 
 #define CMD_COLS 80
 #define CMD_LINES 25
+
 //#define NUM1 128
 //#define NUM2 50
+char ScreenName[128] = "图书管理系统";
+char AddBookScreenName[128] = "";
+char ShowBookScreenName[128] = "";
+char DeleteBookScreenName[128] = "";
 
-using namespace std;
+
 
 CBook::CBook(char* cName, char* cIsbn,char* cPrice,char* cAuthor)
 {
@@ -161,17 +167,23 @@ void CBook::DeleteData(int iCount)
 	remove("temp.dat");
 }
 
-//SetScreenGrid function
-void SetScreenGrid()
+//SetScreenGrid function 设置输出窗口的大小
+void SetScreenGrid( )
 {
+	//system("mode con cols=CMD_COLS lines=CMD_LINES");//窗口宽度高度
+	//system("date /T");
+	//system("TIME /T");
 	char sysSetBuf[80];
 	sprintf(sysSetBuf,"mode con cols=%d lines=%d",CMD_COLS,CMD_LINES);
-	cout<<"set screen grid"<<endl;
+	//cout<<"成功设置窗口大小"<<endl;
+	//cout << sysSetBuf << endl;
+	//system("pause");
 	system(sysSetBuf);
+	system("color 17");
 }
 
 //SetSysCaption function(style 1)
-void SetsysCaptionStyle1()
+void SetsysCaptionStyle1( )
 {
 	system("title LibraryManagementSystem");
 }
@@ -184,30 +196,37 @@ void SetsysCaptionStyle2(const char* pText)
 	system(sysSetBuf);
 }
 //ClearSreen function
-void ClearScreen()
+void ClearScreen( )
 {
 	system("cls");
 }
 
 //ShowWelcome function
-void ShowWelcome()
+void ShowWelcome( )
 {
 	for (int i = 0; i < 7; i++)
 		cout << endl;
-	cout << setw(55);
-	cout << "**************************************" << endl;
+	cout << setw(40) << "**************************************" << endl;;
+	
+	//cout 
+
 	cout << setw(55);
 	cout << "*************图书管理系统*************" << endl;
 	cout << setw(55);
+	cout << setfill(' ') << setw(55) <<"****"<< endl;
 	cout << "**************************************" << endl;
 	cout << endl;
+	for (int i = 0; i < 7; i++)
+		cout << endl;
 	//cout << setfill('*') << setw(50) << "图书管理系统" << endl;
 }
 
 //ShowRootMenu function
-void ShowRootMenu()
+void ShowRootMenu( )
 {
-	cout << setw(40);
+	for (int i = 0; i < 7; i++)
+		cout << endl;
+	cout << setw(38);
 	cout << "请选择" << endl;
 	cout << endl;
 	cout << setw(38);
@@ -216,12 +235,15 @@ void ShowRootMenu()
 	cout << "2 浏览全部" << endl;
 	cout << setw(38);
 	cout << "3 删除图书" << endl;
+	for (int i = 0; i < 7; i++)
+		cout << endl;
+	cout << "请输入选择的序号" << endl;
 }
 
 //WaitUser function
 void WaitUser()
 {	
-	int ilnputPage = 0;
+	//int ilnputPage = 0;
 	cout << "enter返回主菜单 q退出" << endl;
 	char buf[256];
 	gets_s(buf);
@@ -367,16 +389,20 @@ int main()
 {
 	SetScreenGrid();
 	//SetsysCaptionStyle1();
-	SetsysCaptionStyle2("图书管理");
+	SetsysCaptionStyle2(ScreenName);
 	//ShowWelcome();
+	//system("pause");
 	while (1)
 	{
-		SetsysCaptionStyle2("图书管理");
+		SetsysCaptionStyle2(ScreenName);
 
 		ClearScreen();
 		ShowWelcome();
+		system("pause");
+
+		ClearScreen();
 		ShowRootMenu();
-		//system("pause");
+		
 		switch (GetSelect())
 		{
 		case 1:
